@@ -107,31 +107,5 @@ export function renderSystem(
     }
   }
 
-  // Game over
-  if (gameState.gameOver) {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#ff0000";
-    ctx.font = "48px monospace";
-    ctx.textAlign = "center";
-    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 40);
-
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "24px monospace";
-    ctx.fillText(
-      `Final Score: ${gameState.score}`,
-      canvas.width / 2,
-      canvas.height / 2 + 20,
-    );
-
-    ctx.font = "16px monospace";
-    ctx.fillText(
-      "Refresh to play again",
-      canvas.width / 2,
-      canvas.height / 2 + 60,
-    );
-  }
-
   ctx.restore();
 }
