@@ -12,7 +12,7 @@ import { enemySpawnSystem } from "@app/systems/enemySpawner";
 import { enemyAISystem } from "@app/systems/enemyAI";
 import { damageIndicatorSystem } from "@app/systems/damageIndicator";
 import { explosionSystem } from "@app/systems/explosion";
-import { renderSystem } from "@app/systems/render";
+import { createGPURenderer, GPURenderer } from "@app/systems/renderGPU";
 import { getGameOverOverlay, getFpsCounter } from "@app/ui-game-overlay";
 import "@app/shaderfun2";
 
@@ -21,6 +21,7 @@ define(
   class extends StoreElement {
     registry = new Registry();
     canvas: HTMLCanvasElement | null = null;
+    gpuRenderer: GPURenderer | null = null;
     gameOverOverlay: HTMLDivElement | null = null;
     fpsCounter: HTMLDivElement | null = null;
     fps = 0;
@@ -104,7 +105,9 @@ define(
       }
 
       // Render
-      renderSystem(this.registry, this.canvas, this.gameState);
+      if (this.gpuRenderer && this.canvas) {
+        this.gpuRenderer.render(this.registry, this.canvas, this.gameState);
+      }
 
       // Continue loop
       this.animationFrameId = requestAnimationFrame(this.#gameLoop);
@@ -215,6 +218,14 @@ define(
       this.canvas.style.backgroundColor = "#000";
       this.canvas.style.cursor = "crosshair";
       appDiv.appendChild(this.canvas);
+
+      // Initialize GPU renderer
+      try {
+        this.gpuRenderer = createGPURenderer(this.canvas);
+      } catch (error) {
+        console.error('Failed to initialize GPU renderer:', error);
+        return;
+      }
 
       // Create game over overlay
       this.gameOverOverlay = getGameOverOverlay(
