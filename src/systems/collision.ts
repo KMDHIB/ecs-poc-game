@@ -7,8 +7,9 @@ import {
   Ship,
   Renderable,
 } from "@app/esc/components";
-import { GameState, ENEMY_COLLISION_DAMAGE } from "@app/game/types";
 import { createDamageIndicator, createExplosion } from "@app/game/entities";
+import { ENEMY_COLLISION_DAMAGE } from "@app/game/constants";
+import { GameState } from "@app/game/types";
 
 function checkCircleCollision(
   pos1: Position,

@@ -21,7 +21,7 @@ import {
   ENEMY_RADIUS,
   ENEMY_HEALTH,
   ENEMY_SCORE_VALUE,
-} from "./types";
+} from "./constants";
 
 let entityCounter = 0;
 

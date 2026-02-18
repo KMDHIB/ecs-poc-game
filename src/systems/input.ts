@@ -1,6 +1,7 @@
 import { Registry } from "@app/esc/registry";
 import { Ship, Velocity } from "@app/esc/components";
-import { InputState, PLAYER_SPEED } from "@app/game/types";
+import { PLAYER_SPEED } from "@app/game/constants";
+import { InputState } from "@app/game/types";
 
 export function inputSystem(registry: Registry, inputState: InputState) {
   // Query for player ship entities with velocity

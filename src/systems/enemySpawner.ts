@@ -1,6 +1,7 @@
 import { Registry } from "@app/esc/registry";
-import { GameState, ENEMY_SPAWN_INTERVAL } from "@app/game/types";
 import { createEnemy } from "@app/game/entities";
+import { ENEMY_SPAWN_INTERVAL } from "@app/game/constants";
+import { GameState } from "@app/game/types";
 
 let lastSpawnTime = 0;
 

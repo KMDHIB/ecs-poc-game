@@ -80,3 +80,24 @@ export function getGameOverOverlay(
 
   return overlay;
 }
+
+export function getFpsCounter(): HTMLDivElement {
+  const fpsCounter = document.createElement("div");
+  fpsCounter.id = "fps-counter";
+  fpsCounter.style.cssText = `
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #00ff00;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #00ff00;
+    z-index: 999;
+    pointer-events: none;
+  `;
+  fpsCounter.textContent = "FPS: 0";
+  return fpsCounter;
+}

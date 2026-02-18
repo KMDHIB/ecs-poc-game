@@ -1,6 +1,6 @@
 import { Registry } from "@app/esc/registry";
 import { Position, Velocity, Ship, Enemy } from "@app/esc/components";
-import { ENEMY_SPEED } from "@app/game/types";
+import { ENEMY_SPEED } from "@app/game/constants";
 
 export function enemyAISystem(registry: Registry) {
   // Find player position

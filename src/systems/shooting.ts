@@ -1,6 +1,7 @@
 import { Registry } from "@app/esc/registry";
 import { Ship, Position } from "@app/esc/components";
-import { InputState, BULLET_COOLDOWN } from "@app/game/types";
+import { BULLET_COOLDOWN } from "@app/game/constants";
+import { InputState } from "@app/game/types";
 import { createBullet } from "@app/game/entities";
 
 export function shootingSystem(

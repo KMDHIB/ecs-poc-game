@@ -12,8 +12,8 @@ import { enemySpawnSystem } from "@app/systems/enemySpawner";
 import { enemyAISystem } from "@app/systems/enemyAI";
 import { damageIndicatorSystem } from "@app/systems/damageIndicator";
 import { explosionSystem } from "@app/systems/explosion";
-import { renderSystem } from "@app/systems/render";
-import { getGameOverOverlay } from "@app/ui-game-overlay";
+import { createGPURenderer, GPURenderer } from "@app/systems/renderGPU";
+import { getGameOverOverlay, getFpsCounter } from "@app/ui-game-overlay";
 import "@app/shaderfun2";
 
 define(
@@ -21,7 +21,12 @@ define(
   class extends StoreElement {
     registry = new Registry();
     canvas: HTMLCanvasElement | null = null;
+    gpuRenderer: GPURenderer | null = null;
     gameOverOverlay: HTMLDivElement | null = null;
+    fpsCounter: HTMLDivElement | null = null;
+    fps = 0;
+    frameCount = 0;
+    fpsUpdateTime = 0;
     gameState: GameState = {
       score: 0,
       gameOver: false,
@@ -45,6 +50,19 @@ define(
         this.lastFrameTime === 0 ? 0 : timestamp - this.lastFrameTime;
       this.lastFrameTime = timestamp;
       this.gameState.elapsedTime += deltaTime;
+
+      // Update FPS counter
+      this.frameCount++;
+      if (timestamp - this.fpsUpdateTime >= 1000) {
+        this.fps = Math.round(
+          (this.frameCount * 1000) / (timestamp - this.fpsUpdateTime),
+        );
+        this.frameCount = 0;
+        this.fpsUpdateTime = timestamp;
+        if (this.fpsCounter) {
+          this.fpsCounter.textContent = `FPS: ${this.fps}`;
+        }
+      }
 
       if (!this.gameState.gameOver) {
         // Hide game over overlay if visible
@@ -87,7 +105,9 @@ define(
       }
 
       // Render
-      renderSystem(this.registry, this.canvas, this.gameState);
+      if (this.gpuRenderer && this.canvas) {
+        this.gpuRenderer.render(this.registry, this.canvas, this.gameState);
+      }
 
       // Continue loop
       this.animationFrameId = requestAnimationFrame(this.#gameLoop);
@@ -99,7 +119,8 @@ define(
         if (ship.type === "player") {
           const dx = this.inputState.mousePos.x - position.x;
           const dy = this.inputState.mousePos.y - position.y;
-          ship.rotation = Math.atan2(dy, dx);
+          // Negate dy because canvas Y increases downward but WebGL Y increases upward
+          ship.rotation = Math.atan2(-dy, dx);
           break;
         }
       }
@@ -199,12 +220,24 @@ define(
       this.canvas.style.cursor = "crosshair";
       appDiv.appendChild(this.canvas);
 
+      // Initialize GPU renderer
+      try {
+        this.gpuRenderer = createGPURenderer(this.canvas);
+      } catch (error) {
+        console.error("Failed to initialize GPU renderer:", error);
+        return;
+      }
+
       // Create game over overlay
       this.gameOverOverlay = getGameOverOverlay(
         this.gameState.score,
         this.#restartGame,
       );
       appDiv.appendChild(this.gameOverOverlay);
+
+      // Create FPS counter
+      this.fpsCounter = getFpsCounter();
+      appDiv.appendChild(this.fpsCounter);
 
       // Setup event listeners
       this.#setupEventListeners();
