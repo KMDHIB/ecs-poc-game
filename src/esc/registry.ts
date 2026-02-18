@@ -32,4 +32,47 @@ export class Registry {
         (id) => types.map((type) => this.#components.get(type)!.get(id)) as T,
       );
   }
+
+  queryWithIds<T extends any[]>(
+    ...types: { [K in keyof T]: Constructor<T[K]> }
+  ): [string, ...T][] {
+    const [first, ...others] = types;
+    const firstMap = this.#components.get(first);
+    if (!firstMap) return [];
+
+    return Array.from(firstMap.keys())
+      .filter((id) =>
+        others.every((type) => this.#components.get(type)?.has(id)),
+      )
+      .map(
+        (id) =>
+          [id, ...types.map((type) => this.#components.get(type)!.get(id))] as [
+            string,
+            ...T,
+          ],
+      );
+  }
+
+  deleteEntity(entityId: string) {
+    for (const componentMap of this.#components.values()) {
+      componentMap.delete(entityId);
+    }
+  }
+
+  removeComponent<T>(entityId: string, type: Constructor<T>) {
+    const componentMap = this.#components.get(type);
+    if (componentMap) {
+      componentMap.delete(entityId);
+    }
+  }
+
+  getAllEntities(): Set<string> {
+    const entities = new Set<string>();
+    for (const componentMap of this.#components.values()) {
+      for (const entityId of componentMap.keys()) {
+        entities.add(entityId);
+      }
+    }
+    return entities;
+  }
 }

@@ -63,3 +63,88 @@ export class TreeType {
     return this.size === "sapling";
   }
 }
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+// Game Components for Top-Down Shooter
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Ship {
+  type: "player" | "enemy";
+  rotation: number;
+
+  constructor(type: "player" | "enemy", rotation: number = 0) {
+    this.type = type;
+    this.rotation = rotation;
+  }
+}
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Renderable {
+  shape: "circle" | "triangle";
+  color: string;
+  radius: number;
+
+  constructor(shape: "circle" | "triangle", color: string, radius: number) {
+    this.shape = shape;
+    this.color = color;
+    this.radius = radius;
+  }
+}
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Health {
+  current: number;
+  max: number;
+
+  constructor(current: number, max: number) {
+    this.current = current;
+    this.max = max;
+  }
+
+  damage(amount: number) {
+    this.current = Math.max(0, this.current - amount);
+  }
+
+  isAlive(): boolean {
+    return this.current > 0;
+  }
+}
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Bullet {
+  damage: number;
+  ownerId: string;
+
+  constructor(damage: number, ownerId: string) {
+    this.damage = damage;
+    this.ownerId = ownerId;
+  }
+}
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Enemy {
+  scoreValue: number;
+
+  constructor(scoreValue: number = 10) {
+    this.scoreValue = scoreValue;
+  }
+}
+
+// >>>>--------------------------------------------------------------------------------<<<<<
+
+export class Lifespan {
+  remainingMs: number;
+
+  constructor(remainingMs: number) {
+    this.remainingMs = remainingMs;
+  }
+
+  tick(deltaMs: number): boolean {
+    this.remainingMs -= deltaMs;
+    return this.remainingMs <= 0;
+  }
+}
