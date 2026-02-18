@@ -1,4 +1,4 @@
-/// <reference path="../../typings/webgpu.d.ts" />
+/// <reference types="@webgpu/types" />
 import { define, StoreElement } from "@flemminghansen/wc-store";
 
 define(
